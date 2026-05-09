@@ -18,7 +18,16 @@
     </p>
     <div class="hero-actions">
         <a href="{{ url_for('register') }}" class="btn-hero">Create free account</a>
-        <a href="{{ url_for('login') }}" class="btn-hero">See how it works</a>
+        <button class="btn-hero js-modal-trigger">See how it works</button>
+    </div>
+
+    <div class="modal-overlay js-modal-overlay">
+        <div class="modal-content">
+            <div class="video-container">
+                <button class="modal-close js-modal-close">&times;</button>
+                <iframe id="modal-video" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
     </div>
     <div class="hero-dashboard">
         <div class="dashboard-window">
@@ -95,5 +104,42 @@
         <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
     </div>
 </section>
+
+<script>
+(function() {
+    const modalTrigger = document.querySelector('.js-modal-trigger');
+    const modalOverlay = document.querySelector('.js-modal-overlay');
+    const modalClose = document.querySelector('.js-modal-close');
+    const videoIframe = document.getElementById('modal-video');
+
+    const VIDEO_URL = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1';
+
+    function openModal() {
+        videoIframe.src = VIDEO_URL;
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+        videoIframe.src = '';
+    }
+
+    modalTrigger.addEventListener('click', openModal);
+    modalClose.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+            closeModal();
+        }
+    });
+})();
+</script>
 
 {% endblock %}
