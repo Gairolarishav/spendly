@@ -3,6 +3,21 @@ from datetime import date
 from werkzeug.security import generate_password_hash
 
 
+def create_user(name, email, password):
+    """Hash password and insert a new user. Raises sqlite3.IntegrityError if email exists."""
+    conn = get_db()
+    try:
+        password_hash = generate_password_hash(password)
+        cur = conn.execute(
+            "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            (name, email, password_hash)
+        )
+        conn.commit()
+        return cur.lastrowid
+    finally:
+        conn.close()
+
+
 def get_db():
     """Returns a SQLite connection with row_factory and foreign keys enabled."""
     conn = sqlite3.connect("spendly.db")
