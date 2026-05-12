@@ -18,6 +18,19 @@ def create_user(name, email, password):
         conn.close()
 
 
+def get_user_by_email(email):
+    """Fetch a user by email. Returns a row dict or None."""
+    conn = get_db()
+    try:
+        user = conn.execute(
+            "SELECT id, name, email, password_hash, created_at FROM users WHERE email = ?",
+            (email,)
+        ).fetchone()
+        return user
+    finally:
+        conn.close()
+
+
 def get_db():
     """Returns a SQLite connection with row_factory and foreign keys enabled."""
     conn = sqlite3.connect("spendly.db")

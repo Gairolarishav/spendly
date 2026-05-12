@@ -3,6 +3,15 @@
 {% block title %}Spendly — Track Every Rupee{% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="auth-container" style="padding: 2rem 2rem 0; max-width: 1200px; margin: 0 auto;">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 
 <section class="hero">
     <div class="hero-badge">
@@ -17,8 +26,12 @@
         Spendly helps you log expenses, spot patterns, and stay on budget — without the spreadsheet headache.
     </p>
     <div class="hero-actions">
-        <a href="{{ url_for('register') }}" class="btn-hero">Create free account</a>
-        <button class="btn-hero js-modal-trigger">See how it works</button>
+        {% if session.get("user_id") %}
+            <a href="{{ url_for('logout') }}" class="btn-hero">Sign out</a>
+        {% else %}
+            <a href="{{ url_for('register') }}" class="btn-hero">Create free account</a>
+            <button class="btn-hero js-modal-trigger">See how it works</button>
+        {% endif %}
     </div>
 
     <div class="modal-overlay js-modal-overlay">
@@ -101,7 +114,9 @@
     <div class="cta-inner">
         <h2 class="cta-title">Ready to take control?</h2>
         <p class="cta-body">Join thousands of people who track their expenses with Spendly.</p>
-        <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
+        {% if not session.get("user_id") %}
+            <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
+        {% endif %}
     </div>
 </section>
 
