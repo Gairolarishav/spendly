@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, request, abort, session, g
+from flask import Flask, render_template, flash, redirect, request, abort, session, g, url_for
 from werkzeug.security import check_password_hash
 import sqlite3
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
@@ -7,19 +7,27 @@ app = Flask(__name__)
 app.secret_key = "dev-secret-key"
 
 
+@app.context_processor
+def inject_user_name():
+    user_name = None
+    if "user_id" in session:
+        conn = get_db()
+        row = conn.execute("SELECT name FROM users WHERE id = ?", (session["user_id"],)).fetchone()
+        if row:
+            user_name = row["name"]
+        conn.close()
+    return dict(user_name=user_name)
+
+
 @app.before_request
 def load_user():
     g.user_name = None
     if "user_id" in session:
-        user = get_user_by_email(session.get("user_email", ""))
-        if user:
-            g.user_name = user["name"]
-        else:
-            conn = get_db()
-            row = conn.execute("SELECT name FROM users WHERE id = ?", (session["user_id"],)).fetchone()
-            if row:
-                g.user_name = row["name"]
-            conn.close()
+        conn = get_db()
+        row = conn.execute("SELECT name FROM users WHERE id = ?", (session["user_id"],)).fetchone()
+        if row:
+            g.user_name = row["name"]
+        conn.close()
 
 with app.app_context():
     init_db()
@@ -94,7 +102,7 @@ def login():
     session["user_id"] = user["id"]
     session["user_email"] = user["email"]
     flash("Welcome back!", "success")
-    return redirect("/")
+    return redirect("/profile")
 
 
 @app.route("/terms")
@@ -120,7 +128,43 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    """Profile page - displays user info, stats, transactions, and category breakdown."""
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    # Hardcoded user data (no DB query in this step)
+    user = {
+        "name": "Demo User",
+        "email": "demo@spendly.com",
+        "member_since": "January 2025",
+        "initials": "DU"
+    }
+
+    # Hardcoded summary stats
+    stats = {
+        "total_spent": 1234.50,
+        "transaction_count": 8,
+        "top_category": "Food"
+    }
+
+    # Hardcoded transaction history (at least 3 rows as per spec)
+    transactions = [
+        {"date": "2025-05-08", "description": "Misc purchase", "category": "Other", "amount": 12.50},
+        {"date": "2025-05-07", "description": "New shoes", "category": "Shopping", "amount": 80.00},
+        {"date": "2025-05-05", "description": "Movie tickets", "category": "Entertainment", "amount": 25.00},
+        {"date": "2025-05-04", "description": "Pharmacy", "category": "Health", "amount": 30.00},
+        {"date": "2025-05-03", "description": "Electricity bill", "category": "Bills", "amount": 120.00},
+    ]
+
+    # Hardcoded category breakdown (at least 3 categories as per spec)
+    categories = [
+        {"name": "Food", "amount": 45.50, "percentage": 37},
+        {"name": "Transport", "amount": 45.00, "percentage": 36},
+        {"name": "Bills", "amount": 120.00, "percentage": 100},
+        {"name": "Shopping", "amount": 80.00, "percentage": 65},
+    ]
+
+    return render_template("profile.html", user=user, stats=stats, transactions=transactions, categories=categories)
 
 
 @app.route("/expenses/add")
