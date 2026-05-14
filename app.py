@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, redirect, request, abort, sessi
 from werkzeug.security import check_password_hash
 import sqlite3
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
+from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -132,37 +133,26 @@ def profile():
     if not session.get("user_id"):
         return redirect(url_for("login"))
 
-    # Hardcoded user data (no DB query in this step)
-    user = {
-        "name": "Demo User",
-        "email": "demo@spendly.com",
-        "member_since": "January 2025",
-        "initials": "DU"
-    }
+    user = get_user_by_id(session["user_id"])
 
-    # Hardcoded summary stats
-    stats = {
-        "total_spent": 1234.50,
-        "transaction_count": 8,
-        "top_category": "Food"
-    }
+    # Compute initials from user's name (first letter of first + last word)
+    name_parts = user["name"].split()
+    initials = (name_parts[0][0] + name_parts[-1][0]).upper()
 
-    # Hardcoded transaction history (at least 3 rows as per spec)
-    transactions = [
-        {"date": "2025-05-08", "description": "Misc purchase", "category": "Other", "amount": 12.50},
-        {"date": "2025-05-07", "description": "New shoes", "category": "Shopping", "amount": 80.00},
-        {"date": "2025-05-05", "description": "Movie tickets", "category": "Entertainment", "amount": 25.00},
-        {"date": "2025-05-04", "description": "Pharmacy", "category": "Health", "amount": 30.00},
-        {"date": "2025-05-03", "description": "Electricity bill", "category": "Bills", "amount": 120.00},
-    ]
+    # Format member_since from created_at (could be string or datetime)
+    created = user["created_at"]
+    if hasattr(created, "strftime"):
+        member_since = created.strftime("%B %Y")
+    else:
+        # SQLite returns date as string "YYYY-MM-DD HH:MM:SS"
+        member_since = created[:7]  # "YYYY-MM"
 
-    # Hardcoded category breakdown (at least 3 categories as per spec)
-    categories = [
-        {"name": "Food", "amount": 45.50, "percentage": 37},
-        {"name": "Transport", "amount": 45.00, "percentage": 36},
-        {"name": "Bills", "amount": 120.00, "percentage": 100},
-        {"name": "Shopping", "amount": 80.00, "percentage": 65},
-    ]
+    user["initials"] = initials
+    user["member_since"] = member_since
+
+    stats = get_summary_stats(session["user_id"])
+    transactions = get_recent_transactions(session["user_id"])
+    categories = get_category_breakdown(session["user_id"])
 
     return render_template("profile.html", user=user, stats=stats, transactions=transactions, categories=categories)
 
