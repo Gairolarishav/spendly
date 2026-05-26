@@ -1,0 +1,146 @@
+/* ------------------------------------------------------------------ */
+/* Analytics — Coming Soon                                            */
+/* ------------------------------------------------------------------ */
+
+.analytics-page {
+    min-height: calc(100vh - 60px - 100px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f0f2f5;
+    padding: 3rem 2rem;
+}
+
+.coming-soon-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 3.5rem 3rem;
+    box-shadow: 0 4px 32px rgba(0, 0, 0, 0.06);
+    max-width: 600px;
+    width: 100%;
+}
+
+.coming-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* App Icon — floating rounded square with clock */
+
+.app-icon {
+    width: 80px;
+    height: 80px;
+    background: #2d4a3e;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(45, 74, 62, 0.25);
+    animation: float 3s infinite ease-in-out;
+}
+
+.app-icon svg {
+    width: 36px;
+    height: 36px;
+    stroke: #ffffff;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+}
+
+/* Pill badge */
+
+.coming-soon-badge {
+    display: inline-block;
+    margin-top: 20px;
+    background: #2d4a3e;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 28px;
+    border-radius: 50px;
+}
+
+/* Heading */
+
+.coming-soon-heading {
+    font-family: var(--font-body);
+    font-size: 42px;
+    font-weight: 700;
+    color: #1a2332;
+    margin-top: 28px;
+    line-height: 1.2;
+}
+
+/* Subtext */
+
+.coming-soon-subtext {
+    color: #6b7280;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 16px auto 0;
+}
+
+/* Animated dots */
+
+.coming-soon-dots {
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: #9ca3af;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite ease-in-out;
+}
+
+.dot-1 { animation-delay: 0s; }
+.dot-2 { animation-delay: 0.2s; }
+.dot-3 { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40% { transform: translateY(-8px); opacity: 1; }
+}
+
+/* Footer text */
+
+.coming-soon-footer {
+    color: #9ca3af;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .coming-soon-card {
+        padding: 2.5rem 1.75rem;
+    }
+
+    .coming-soon-heading {
+        font-size: 28px;
+    }
+
+    .coming-soon-subtext {
+        font-size: 15px;
+    }
+
+    .analytics-page {
+        padding: 2rem 1.25rem;
+    }
+}
