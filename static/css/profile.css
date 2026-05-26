@@ -1,0 +1,332 @@
+/* Profile Page Styles */
+
+.profile-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* Filter Bar */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--paper-card);
+    border-radius: var(--radius-md);
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+}
+
+.filter-presets {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.preset-btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--ink-muted);
+    background: var(--paper);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+    background: var(--paper-warm);
+    color: var(--ink);
+}
+
+.preset-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.filter-custom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.date-input {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--paper);
+    color: var(--ink);
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.date-separator {
+    color: var(--ink-muted);
+    font-size: 14px;
+}
+
+.apply-btn {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.apply-btn:hover {
+    background: var(--ink-soft);
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.profile-info h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    font-family: var(--font-display);
+}
+
+.profile-info .email {
+    color: var(--ink-muted);
+    margin: 0 0 4px 0;
+}
+
+.profile-info .member-since {
+    color: var(--ink-muted);
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Profile Stats */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.profile-stat-card {
+    background: var(--paper-card);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    text-align: center;
+    border: 1px solid var(--border-soft);
+}
+
+.profile-stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.profile-stat-value {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.profile-stat-label {
+    color: var(--ink-muted);
+    font-size: 14px;
+}
+
+/* Profile Table */
+.profile-table-section {
+    margin-bottom: 32px;
+}
+
+.profile-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    font-family: var(--font-display);
+}
+
+.profile-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
+}
+
+.profile-table th,
+.profile-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.profile-table th {
+    background: var(--paper);
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-table td {
+    font-size: 14px;
+}
+
+.profile-table td.date {
+    color: var(--ink-muted);
+    white-space: nowrap;
+}
+
+.profile-table td.amount {
+    font-weight: 600;
+    text-align: right;
+}
+
+.profile-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.profile-table tbody tr:hover {
+    background: var(--paper-warm);
+}
+
+/* Category Breakdown */
+.profile-categories-section {
+    margin-bottom: 32px;
+}
+
+.profile-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.category-row {
+    display: grid;
+    grid-template-columns: 120px 100px 1fr 50px;
+    align-items: center;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.category-name {
+    font-weight: 500;
+}
+
+.category-amount {
+    font-weight: 600;
+    text-align: right;
+}
+
+.category-bar-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.category-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    transition: width 0.3s ease;
+}
+
+.category-pct {
+    color: var(--ink-muted);
+    font-size: 14px;
+    text-align: right;
+}
+
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.badge-food { background: #fef3c7; color: #92400e; }
+.badge-transport { background: #dbeafe; color: #1e40af; }
+.badge-shopping { background: #fce7f3; color: #9d174d; }
+.badge-entertainment { background: #e0e7ff; color: #3730a3; }
+.badge-utilities { background: #d1fae5; color: #065f46; }
+.badge-healthcare { background: #fee2e2; color: #991b1b; }
+.badge-other { background: #f3f4f6; color: #374151; }
+
+/* Responsive */
+@media (max-width: 640px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-presets {
+        justify-content: center;
+    }
+
+    .filter-custom {
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    .category-row {
+        grid-template-columns: 1fr 80px;
+        gap: 8px;
+    }
+
+    .category-bar-track {
+        display: none;
+    }
+
+    .profile-table {
+        font-size: 13px;
+    }
+
+    .profile-table th,
+    .profile-table td {
+        padding: 12px;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}

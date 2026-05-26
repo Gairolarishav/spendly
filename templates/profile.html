@@ -15,6 +15,22 @@
         </div>
     </div>
 
+    <!-- Date Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-presets">
+            <a href="{{ url_for('profile') }}" class="preset-btn {% if active_preset == 'all_time' %}active{% endif %}">All Time</a>
+            <a href="{{ url_for('profile', date_from=presets.this_month.date_from, date_to=presets.this_month.date_to) }}" class="preset-btn {% if active_preset == 'this_month' %}active{% endif %}">This Month</a>
+            <a href="{{ url_for('profile', date_from=presets.last_3_months.date_from, date_to=presets.last_3_months.date_to) }}" class="preset-btn {% if active_preset == 'last_3_months' %}active{% endif %}">Last 3 Months</a>
+            <a href="{{ url_for('profile', date_from=presets.last_6_months.date_from, date_to=presets.last_6_months.date_to) }}" class="preset-btn {% if active_preset == 'last_6_months' %}active{% endif %}">Last 6 Months</a>
+        </div>
+        <form method="get" action="{{ url_for('profile') }}" class="filter-custom">
+            <input type="date" name="date_from" value="{{ date_from or '' }}" class="date-input">
+            <span class="date-separator">to</span>
+            <input type="date" name="date_to" value="{{ date_to or '' }}" class="date-input">
+            <button type="submit" class="apply-btn">Apply</button>
+        </form>
+    </div>
+
     <!-- Summary Stats Row -->
     <div class="profile-stats">
         <div class="profile-stat-card">
@@ -74,9 +90,9 @@
                 <span class="category-name">{{ cat.name }}</span>
                 <span class="category-amount">₹{{ "%.2f"|format(cat.amount) }}</span>
                 <div class="category-bar-track">
-                    <div class="category-bar-fill" style="width: {{ cat.percentage }}%;"></div>
+                    <div class="category-bar-fill" style="width: {{ cat.pct }}%;"></div>
                 </div>
-                <span class="category-pct">{{ cat.percentage }}%</span>
+                <span class="category-pct">{{ cat.pct }}%</span>
             </div>
             {% endfor %}
         </div>
