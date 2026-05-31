@@ -113,3 +113,15 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
         return breakdown
     finally:
         conn.close()
+
+
+def insert_expense(user_id, amount, category, date, description):
+    conn = get_db()
+    try:
+        conn.execute(
+            "INSERT INTO expenses (user_id, amount, category, date, description) VALUES (?, ?, ?, ?, ?)",
+            (user_id, amount, category, date, description)
+        )
+        conn.commit()
+    finally:
+        conn.close()

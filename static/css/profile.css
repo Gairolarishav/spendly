@@ -171,6 +171,31 @@
     margin-bottom: 32px;
 }
 
+.profile-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.profile-section-header .profile-section-title {
+    margin-bottom: 0;
+}
+
+.btn-add-expense {
+    padding: 0.45rem 1rem;
+    background: var(--accent);
+    color: var(--paper-card);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: opacity 0.15s;
+}
+
+.btn-add-expense:hover {
+    opacity: 0.85;
+}
+
 .profile-section-title {
     font-size: 20px;
     font-weight: 600;
