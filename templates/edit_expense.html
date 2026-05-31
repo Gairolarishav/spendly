@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Expense — Spendly{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add_expense.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="add-expense-page">
+    <div class="add-expense-card">
+        <h1 class="add-expense-title">Edit Expense</h1>
+
+        <form method="POST" action="{{ url_for('edit_expense', id=expense.id) }}" class="expense-form">
+            <div class="form-group">
+                <label for="amount">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" step="0.01" min="0.01"
+                       value="{{ form.get('amount', '') }}" required placeholder="0.00">
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" {% if form.get('category') == cat %}selected{% endif %}>
+                            {{ cat }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date"
+                       value="{{ form.get('date', '') }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description <span class="optional">(optional)</span></label>
+                <input type="text" id="description" name="description"
+                       maxlength="200" value="{{ form.get('description', '') }}"
+                       placeholder="What was this for?">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Save Changes</button>
+                <a href="{{ url_for('profile') }}" class="btn-cancel">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
