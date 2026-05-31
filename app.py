@@ -4,10 +4,12 @@ from datetime import datetime, date
 import calendar
 import sqlite3
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
-from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown
+from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown, insert_expense
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
+
+VALID_CATEGORIES = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
 
 
 @app.context_processor
@@ -234,9 +236,50 @@ def profile():
     return render_template("profile.html", user=user, stats=stats, transactions=transactions, categories=categories, date_from=valid_from, date_to=valid_to, active_preset=active_preset, presets=presets)
 
 
-@app.route("/expenses/add")
+@app.route("/expenses/add", methods=["GET", "POST"])
 def add_expense():
-    return "Add expense — coming in Step 7"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        amount_str = request.form.get("amount", "").strip()
+        category = request.form.get("category", "").strip()
+        date_str = request.form.get("date", "").strip()
+        description = request.form.get("description", "").strip() or None
+
+        error = None
+        amount = None
+
+        try:
+            amount = float(amount_str)
+            if amount <= 0:
+                error = "Amount must be greater than 0."
+        except ValueError:
+            error = "Amount must be a valid number."
+
+        if not error and category not in VALID_CATEGORIES:
+            error = "Invalid category selected."
+
+        if not error:
+            try:
+                datetime.strptime(date_str, "%Y-%m-%d")
+            except ValueError:
+                error = "Invalid date format."
+
+        if error:
+            flash(error, "error")
+            return render_template("add_expense.html",
+                                   categories=VALID_CATEGORIES,
+                                   form=request.form,
+                                   today=date.today().isoformat())
+
+        insert_expense(session["user_id"], amount, category, date_str, description)
+        return redirect(url_for("profile"))
+
+    return render_template("add_expense.html",
+                           categories=VALID_CATEGORIES,
+                           form={},
+                           today=date.today().isoformat())
 
 
 @app.route("/expenses/<int:id>/edit")
