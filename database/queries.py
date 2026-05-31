@@ -71,7 +71,7 @@ def get_recent_transactions(user_id, limit=10, date_from=None, date_to=None):
         params.append(limit)
 
         rows = conn.execute(
-            f"SELECT date, description, category, amount FROM expenses {where_clause} ORDER BY date DESC LIMIT ?",
+            f"SELECT id, date, description, category, amount FROM expenses {where_clause} ORDER BY date DESC LIMIT ?",
             params
         ).fetchall()
         return [dict(row) for row in rows]
@@ -111,6 +111,30 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
             breakdown[0]["pct"] += remainder
 
         return breakdown
+    finally:
+        conn.close()
+
+
+def get_expense_by_id(expense_id):
+    conn = get_db()
+    try:
+        row = conn.execute(
+            "SELECT id, user_id, amount, category, date, description FROM expenses WHERE id = ?",
+            (expense_id,)
+        ).fetchone()
+        return dict(row) if row else None
+    finally:
+        conn.close()
+
+
+def update_expense(expense_id, amount, category, date, description):
+    conn = get_db()
+    try:
+        conn.execute(
+            "UPDATE expenses SET amount=?, category=?, date=?, description=? WHERE id=?",
+            (amount, category, date, description, expense_id)
+        )
+        conn.commit()
     finally:
         conn.close()
 

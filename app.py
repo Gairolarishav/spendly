@@ -2,9 +2,10 @@ from flask import Flask, render_template, flash, redirect, request, abort, sessi
 from werkzeug.security import check_password_hash
 from datetime import datetime, date
 import calendar
+import math
 import sqlite3
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
-from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown, insert_expense
+from database.queries import get_user_by_id, get_summary_stats, get_recent_transactions, get_category_breakdown, insert_expense, get_expense_by_id, update_expense
 
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
@@ -252,7 +253,7 @@ def add_expense():
 
         try:
             amount = float(amount_str)
-            if amount <= 0:
+            if not math.isfinite(amount) or amount <= 0:
                 error = "Amount must be greater than 0."
         except ValueError:
             error = "Amount must be a valid number."
@@ -282,9 +283,62 @@ def add_expense():
                            today=date.today().isoformat())
 
 
-@app.route("/expenses/<int:id>/edit")
+@app.route("/expenses/<int:id>/edit", methods=["GET", "POST"])
 def edit_expense(id):
-    return "Edit expense — coming in Step 8"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    expense = get_expense_by_id(id)
+    if not expense:
+        abort(404)
+    if expense["user_id"] != session["user_id"]:
+        abort(403)
+
+    if request.method == "POST":
+        amount_str = request.form.get("amount", "").strip()
+        category = request.form.get("category", "").strip()
+        date_str = request.form.get("date", "").strip()
+        description = request.form.get("description", "").strip() or None
+
+        error = None
+        amount = None
+
+        try:
+            amount = float(amount_str)
+            if not math.isfinite(amount) or amount <= 0:
+                error = "Amount must be greater than 0."
+        except ValueError:
+            error = "Amount must be a valid number."
+
+        if not error and category not in VALID_CATEGORIES:
+            error = "Invalid category selected."
+
+        if not error:
+            try:
+                datetime.strptime(date_str, "%Y-%m-%d")
+            except ValueError:
+                error = "Invalid date format."
+
+        if error:
+            flash(error, "error")
+            return render_template("edit_expense.html",
+                                   expense=expense,
+                                   categories=VALID_CATEGORIES,
+                                   form=request.form)
+
+        update_expense(id, amount, category, date_str, description)
+        return redirect(url_for("profile"))
+
+    form = {
+        "amount": expense["amount"],
+        "category": expense["category"],
+        "date": expense["date"],
+        "description": expense["description"] or "",
+    }
+    return render_template("edit_expense.html",
+                           expense=expense,
+                           categories=VALID_CATEGORIES,
+                           form=form)
 
 
 @app.route("/expenses/<int:id>/delete")
